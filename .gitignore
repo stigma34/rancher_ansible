@@ -1,2 +1,2 @@
 .vault.key
-**/vault.yml
+group_vars/*/vault.yml
