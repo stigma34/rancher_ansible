@@ -1,28 +1,16 @@
 ---
-- name: Get Rancher pods in {{ rancher_namespace }}
-  command: kubectl -n {{ rancher_namespace }} get pods --no-headers
+- name: Wait for Rancher pods to be Ready
+  command: >
+    kubectl -n {{ rancher_namespace }} get pods --no-headers
   register: rancher_pods
   changed_when: false
-  failed_when: false
-
-- name: Build Rancher pod summary list
-  set_fact:
-    rancher_summary: "{{ rancher_pods.stdout_lines
-                         | map('regex_replace',
-                               '^(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(\\S+)\\s+(.*)$',
-                               '\\1 | Status: \\3 | Ready: \\2 | Age: \\5')
-                         | list }}"
-  when: rancher_pods.stdout_lines is defined
-
-- name: Show Rancher pod summary (clean output)
-  debug:
-    msg: |
-      Rancher Pod Status Summary:
-      {% for line in rancher_summary %}
-      {{ line }}
-      {% endfor %}
-  when: rancher_pods.stdout_lines is defined
-
+  retries: 40
+  delay: 15
+  until:
+    - rancher_pods.rc == 0
+    - rancher_pods.stdout != ""
+    - rancher_pods.stdout is search("Running")
+    
 - name: Display Rancher URL
   debug:
     msg: "Rancher is available at: https://{{ rancher_hostname }}"

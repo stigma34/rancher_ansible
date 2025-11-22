@@ -24,14 +24,3 @@
   changed_when: "'Release \"rancher\" has been upgraded' in rancher_helm.stdout
                  or 'Release \"rancher\" has been installed' in rancher_helm.stdout"
 
-- name: Wait for Rancher pods to be Ready
-  command: >
-    kubectl -n {{ rancher_namespace }} get pods --no-headers
-  register: rancher_pods
-  changed_when: false
-  retries: 40
-  delay: 15
-  until:
-    - rancher_pods.rc == 0
-    - rancher_pods.stdout != ""
-    - rancher_pods.stdout is search("Running")
