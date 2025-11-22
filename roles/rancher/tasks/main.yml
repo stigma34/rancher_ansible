@@ -30,9 +30,6 @@
   command: modprobe br_netfilter
   when: not brnet.stat.exists
 
-- name: Build and configure swap
-  include_tasks: swap.yml
-
 - name: Download and install k3s
   include_tasks: k3s.yml
 
