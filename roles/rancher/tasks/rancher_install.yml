@@ -17,7 +17,7 @@
     release_namespace: "{{ rancher_namespace }}"
     create_namespace: true
     wait: true
-    timeout: 1200
+    timeout: 1200s
     values:
       hostname: "{{ rancher_hostname }}"
       replicas: "{{ rancher_replicas }}"

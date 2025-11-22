@@ -20,7 +20,7 @@
     release_namespace: "{{ cert_manager_namespace }}"
     create_namespace: true
     wait: true
-    timeout: 600
+    timeout: 600s
     values:
       installCRDs: true
   register: cert_manager_helm
