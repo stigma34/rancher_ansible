@@ -1,65 +1,301 @@
-/* ============================================================
-   GLOBAL DARK THEME FOR PAGE BACKGROUND + TEXT
-   ============================================================ */
+/* Prairie // Tactical Rancher Theme
+ * Replace the entire contents of prairie.css with this file.
+ * Dark page, OD green + Rancher blue accents, terminal-style code blocks.
+ */
 
-html, body {
-  background: #050607 !important;   /* deep near-black */
-  color: #d7e5d8 !important;        /* soft OD-tinted pale green */
+:root {
+  --bg-page: #050607;
+  --bg-card: #060c0a;
+  --bg-card-alt: #09130f;
+  --border-subtle: #223428;
+
+  --text-main: #d7e5d8;
+  --text-muted: #9fb3a3;
+
+  --od-deep: #0c322c;       /* Pine */
+  --od-green: #30ba78;      /* Jungle */
+  --rancher-blue: #2453ff;  /* Waterhole */
+  --rancher-dark: #192072;  /* Midnight */
+
+  --code-bg: #050b08;
+  --code-border: #22352b;
+}
+
+/* Global layout / background */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  background-color: var(--bg-page) !important;
+  color: var(--text-main) !important;
   margin: 0;
   padding: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
 }
 
-/* Center container GitHub Pages uses */
+/* GitHub wraps markdown in .markdown-body */
+
 .markdown-body {
-  background: #0b1510 !important;   /* OD green / dark */
-  color: #d7e5d8 !important;
-  border: 1px solid #22352b !important;
+  max-width: 960px;
+  margin: 2.5rem auto;
+  padding: 2.5rem 2.25rem;
+  background: radial-gradient(circle at top, var(--bg-card-alt) 0, var(--bg-card) 55%);
   border-radius: 1rem;
-  padding: 2rem 2.25rem;
+  border: 1px solid var(--border-subtle);
   box-shadow:
-    0 0 0 1px rgba(0,0,0,0.6),
-    0 12px 32px rgba(0,0,0,0.85);
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 18px 40px rgba(0, 0, 0, 0.95);
+  color: var(--text-main);
 }
 
-/* Make normal paragraphs readable */
+/* Basic text */
+
 .markdown-body p {
-  color: #d7e5d8 !important;
+  margin: 0.3rem 0 0.9rem;
+  color: var(--text-main);
 }
 
-/* Make links match dark theme */
+.markdown-body strong {
+  color: var(--od-green);
+}
+
+/* Headings */
+
+.markdown-body h1,
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.markdown-body h1 {
+  color: var(--od-green);
+  font-size: 2.3rem;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid rgba(36, 83, 255, 0.35);
+  padding-bottom: 0.8rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.markdown-body h1::after {
+  content: " // tactical rancher";
+  font-size: 0.9rem;
+  text-transform: none;
+  letter-spacing: 0.12em;
+  color: var(--text-muted);
+}
+
+.markdown-body h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  color: var(--rancher-blue);
+  border-left: 3px solid var(--od-green);
+  padding-left: 0.75rem;
+}
+
+.markdown-body h3 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  color: var(--od-green);
+}
+
+/* Links */
+
 .markdown-body a {
-  color: #2453ff !important;  /* Rancher blue */
-  border-bottom: 1px dashed rgba(36,83,255,0.5);
+  color: var(--rancher-blue);
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(36, 83, 255, 0.5);
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease,
+    background-color 0.15s ease;
 }
 
 .markdown-body a:hover {
-  color: #30ba78 !important;  /* OD green highlight */
-  border-color: rgba(48,186,120,0.7);
+  color: var(--od-green);
+  border-color: rgba(48, 186, 120, 0.7);
+  background-color: rgba(12, 50, 44, 0.35);
 }
 
-/* --- Fix for GitHub code highlighter overriding our theme --- */
+/* Lists */
 
-/* Base: force everything inside code to follow our colors */
+.markdown-body ul,
+.markdown-body ol {
+  padding-left: 1.4rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.markdown-body li {
+  margin: 0.15rem 0;
+}
+
+.markdown-body li::marker {
+  color: var(--od-green);
+}
+
+/* Horizontal rule */
+
+.markdown-body hr {
+  border: none;
+  height: 1px;
+  margin: 2.4rem 0;
+  background:
+    linear-gradient(
+      90deg,
+      transparent,
+      rgba(12, 50, 44, 0.1),
+      rgba(48, 186, 120, 0.65),
+      rgba(36, 83, 255, 0.55),
+      rgba(12, 50, 44, 0.1),
+      transparent
+    );
+}
+
+/* Blockquotes */
+
+.markdown-body blockquote {
+  border-left: 3px solid var(--od-deep);
+  padding-left: 0.9rem;
+  color: var(--text-muted);
+  margin: 1.1rem 0;
+}
+
+/* Tables (future-proofing) */
+
+.markdown-body table {
+  border-collapse: collapse;
+  margin: 1.2rem 0;
+  width: 100%;
+  font-size: 0.9rem;
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--border-subtle);
+  padding: 0.5rem 0.75rem;
+}
+
+.markdown-body th {
+  background: rgba(24, 34, 30, 0.95);
+  color: var(--text-main);
+}
+
+.markdown-body tr:nth-child(even) td {
+  background: rgba(8, 16, 12, 0.95);
+}
+
+/* Inline code */
+
+.markdown-body code {
+  font-family: "JetBrains Mono", "Fira Code", SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+  background: rgba(9, 20, 14, 0.95);
+  padding: 0.1em 0.4em;
+  border-radius: 0.35em;
+  border: 1px solid rgba(48, 186, 120, 0.7);
+  color: var(--od-green);
+}
+
+/* --- CODE BLOCKS / TERMINAL CARDS --------------------------- */
+
+.markdown-body pre,
+.markdown-body pre code {
+  font-family: "JetBrains Mono", "Fira Code", SFMono-Regular, Menlo, Monaco,
+    Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+/* Base terminal card */
+
+.markdown-body pre {
+  position: relative;
+  margin: 1.4rem 0;
+  padding: 2.1rem 1.2rem 1.1rem;
+  border-radius: 0.9rem;
+  background: var(--code-bg);
+  border: 1px solid var(--code-border);
+  overflow-x: auto;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 16px 36px rgba(0, 0, 0, 0.9);
+  color: #d3eed8;
+}
+
+/* Terminal header bar */
+
+.markdown-body pre::before {
+  content: "terminal";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.6rem;
+  background: linear-gradient(90deg, #050806, var(--od-deep) 45%, #050806 100%);
+  border-radius: 0.9rem 0.9rem 0 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.75);
+}
+
+/* Fake mac-style dots */
+
+.markdown-body pre::after {
+  content: "";
+  position: absolute;
+  top: 0.55rem;
+  left: 0.9rem;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 999px;
+  background: #f95c5c;
+  box-shadow:
+    1.05rem 0 0 #fabe3c,
+    2.1rem 0 0 #39d084;
+}
+
+/* Inner code */
+
+.markdown-body pre code {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  color: inherit;
+}
+
+/* --- Nuke GitHub's default light theme in code blocks -------- */
+
+/* everything inside code inherits our colors */
 .markdown-body pre code *,
 .markdown-body code * {
   color: inherit !important;
   background: transparent !important;
 }
 
-/* Base <pre> styling: dark terminal, readable text */
+/* base <pre> override (no white ever) */
 .markdown-body pre {
-  background-color: #050b08 !important;  /* deep green-black */
-  color: #d3eed8 !important;             /* pleasant pale green */
+  background-color: #050b08 !important;
+  color: #d3eed8 !important;
   border: 1px solid #22352b !important;
 }
 
-/* Inner <code> element inside the block */
-.markdown-body pre code {
-  background-color: transparent !important;
-  color: #d3eed8 !important;
-}
-
-/* GitHub syntax token classes: nuke their colors */
+/* syntax token classes from GitHub */
 .markdown-body pre .pl-c,
 .markdown-body pre .pl-c1,
 .markdown-body pre .pl-s,
@@ -84,15 +320,74 @@ html, body {
   color: inherit !important;
 }
 
-/* EXTRA: explicitly kill background on spans GitHub injects */
+/* extra kill switch for spans */
 .markdown-body pre code span,
 .markdown-body pre span {
   background: transparent !important;
   color: inherit !important;
 }
 
-/* Make TEXT (```text) blocks especially dark / readable */
+/* --- SPECIAL VARIANTS USING LANGUAGE TAGS -------------------- */
+/* Requires ```bash, ```ansible, ```rancher, ```text in markdown */
+
+/* Ansible-style terminal */
+
+.markdown-body pre:has(code.language-ansible) {
+  border-color: rgba(48, 186, 120, 0.9) !important;
+  background: radial-gradient(circle at top left, #10281f 0, #050b08 55%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 18px 40px rgba(0, 0, 0, 0.95),
+    0 0 24px rgba(48, 186, 120, 0.35);
+}
+
+.markdown-body pre:has(code.language-ansible)::before {
+  content: "ansible // prairie";
+  background: linear-gradient(
+    90deg,
+    #09140f,
+    rgba(48, 186, 120, 0.4),
+    #09140f
+  );
+}
+
+/* Rancher-style terminal */
+
+.markdown-body pre:has(code.language-rancher) {
+  border-color: rgba(36, 83, 255, 0.9) !important;
+  background: radial-gradient(circle at top, #111633 0, #050611 55%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.75),
+    0 18px 40px rgba(0, 0, 0, 0.95),
+    0 0 24px rgba(36, 83, 255, 0.4);
+}
+
+.markdown-body pre:has(code.language-rancher)::before {
+  content: "rancher shell // k3s cluster";
+  background: linear-gradient(
+    90deg,
+    #050611,
+    rgba(36, 83, 255, 0.55),
+    #050611
+  );
+}
+
+/* Generic bash terminal (for your ./prairie/tools/ansible_init.sh) */
+
+.markdown-body pre:has(code.language-bash)::before {
+  content: "shell // prairie host";
+}
+
+/* Tree / text output (```text) */
+
 .markdown-body pre:has(code.language-text) {
-  background-color: #040705 !important;  /* slightly different dark */
+  background-color: #040705 !important;
   color: #dbe7dd !important;
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.7),
+    0 14px 30px rgba(0, 0, 0, 0.9);
+}
+
+.markdown-body pre:has(code.language-text)::before {
+  content: "output // tree";
 }
