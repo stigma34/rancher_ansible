@@ -4,7 +4,6 @@ set -euo pipefail
 # This script is expected to live at: prairie/tools/ansible_init.sh
 # and be run from the repo root as: ./prairie/tools/ansible_init.sh
 
-
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
 
@@ -25,16 +24,59 @@ VAULT_KEY="${ROOT_DIR}/.vault.key"
 VAULT_DIR="${ROOT_DIR}/group_vars/cattle"
 VAULT_FILE="${VAULT_DIR}/vault.yml"
 
-echo "[+] Updating system packages..."
-dnf -y update
+# ---------------------------------------------------------------------------
+# OS detection + package install
+# ---------------------------------------------------------------------------
 
-echo "[+] Installing required system packages..."
-dnf -y install python3 python3-pip python3-devel gcc openssl-devel kernel-modules-extra
+if command -v dnf >/dev/null 2>&1; then
+  PKG_MGR="dnf"
+elif command -v apt-get >/dev/null 2>&1; then
+  PKG_MGR="apt"
+else
+  echo "[prairie-init] ERROR: Neither dnf nor apt-get found. Unsupported platform." >&2
+  exit 1
+fi
+
+echo "[+] Detected package manager: ${PKG_MGR}"
+
+if [[ "${PKG_MGR}" == "dnf" ]]; then
+  echo "[+] Updating system packages (dnf)..."
+  dnf -y update
+
+  echo "[+] Installing required system packages (dnf)..."
+  dnf -y install \
+    python3 \
+    python3-pip \
+    python3-devel \
+    python3-virtualenv \
+    gcc \
+    openssl-devel \
+    kernel-modules-extra
+
+elif [[ "${PKG_MGR}" == "apt" ]]; then
+  echo "[+] Updating system packages (apt)..."
+  apt-get update -y
+
+  echo "[+] Installing required system packages (apt)..."
+  # python3-venv is important here so `python3 -m venv` actually works
+  apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    python3-dev \
+    build-essential \
+    libssl-dev
+fi
+
+# ---------------------------------------------------------------------------
+# Python virtualenv + Ansible
+# ---------------------------------------------------------------------------
 
 echo "[+] Creating Ansible virtual environment..."
 python3 -m venv ~/ansible-venv
 
 echo "[+] Activating virtual environment..."
+# shellcheck disable=SC1090
 source ~/ansible-venv/bin/activate
 
 echo "[+] Upgrading pip and installing Ansible..."
@@ -54,6 +96,10 @@ echo "     deactivate"
 echo ""
 echo "[+] Version check:"
 ansible --version
+
+# ---------------------------------------------------------------------------
+# Vault setup
+# ---------------------------------------------------------------------------
 
 echo "[+] Ensure group_vars/cattle directory exists"
 echo "[prairie-init] Ensuring vault directory exists: ${VAULT_DIR}"
