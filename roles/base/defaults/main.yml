@@ -11,3 +11,9 @@ prairie_base_packages:
     - wget
     - ufw
     - tar
+
+prairie_supported_families:
+  - RedHat
+  - Debian
+
+prairie_manage_firewall: true

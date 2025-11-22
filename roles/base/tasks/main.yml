@@ -1,20 +1,57 @@
 ---
-- name: Update the OS
+- name: Ensure OS family is supported by Prairie
+  fail:
+    msg: >
+      Prairie currently supports these OS families: {{ prairie_supported_families | join(', ') }}.
+      This host is '{{ ansible_os_family }}', which is not supported yet.
+  when: ansible_os_family not in prairie_supported_families
+
+# RedHat / Fedora: full package update via dnf
+- name: Update OS packages on RedHat family
   dnf:
     name: "*"
     state: latest
+    update_only: true
+  when: ansible_os_family == "RedHat"
+
+# Debian / Ubuntu: full upgrade via apt
+- name: Update OS packages on Debian family
+  apt:
+    update_cache: yes
+    upgrade: dist
+  when: ansible_os_family == "Debian"
+
+- name: Autoremove unused packages on Debian family
+  apt:
+    autoremove: yes
+  when: ansible_os_family == "Debian"
+
 
 - name: Install base packages
   package:
     name: "{{ prairie_base_packages[ansible_os_family] | default([]) }}"
     state: present
+  when:
+    - prairie_base_packages[ansible_os_family] is defined
+    - prairie_base_packages[ansible_os_family] | length > 0
 
-- name: Enable and start firewall service where applicable
+# RedHat family: manage firewalld normally
+- name: Enable and start firewalld on RedHat family
   service:
-    name: "{{ 'firewalld' if ansible_os_family == 'RedHat' else 'ufw' }}"
+    name: firewalld
     state: started
     enabled: true
-  when: ansible_os_family in ['RedHat', 'Debian']
+  when:
+    - prairie_manage_firewall
+    - ansible_os_family == "RedHat"
+
+# Debian/Ubuntu: install ufw but do NOT auto-enable it (avoid SSH lockouts)
+- name: Ensure ufw is installed on Debian family
+  package:
+    name: ufw
+    state: present
+  when:
+    - ansible_os_family == "Debian"
 
 - name: Check if br_netfilter module is present
   stat:
