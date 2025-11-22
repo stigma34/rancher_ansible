@@ -1,7 +1,101 @@
 ---
-# Prairie rancher role
-# Helm install, repo add, Rancher chart deployment, etc. live here.
+- name: Update the OS
+  dnf:
+    name: "*"
+    state: latest
 
-- name: Placeholder rancher task
+- name: Install additional packages
+  dnf:
+    name:
+      - nano
+      - wget
+      - tar
+    state: latest
+
+- name: Check if br_netfilter module is present
+  stat:
+    path: /sys/module/br_netfilter
+  register: brnet
+
+- name: Ensure br_netfilter loads at boot
+  copy:
+    dest: /etc/modules-load.d/br_netfilter.conf
+    content: "br_netfilter\n"
+    owner: root
+    group: root
+    mode: '0644'
+  when: not brnet.stat.exists
+
+- name: Enable br_netfilter if not already loaded
+  command: modprobe br_netfilter
+  when: not brnet.stat.exists
+
+- name: Build and configure swap
+  include_tasks: swap.yml
+
+- name: Download and install k3s
+  include_tasks: k3s.yml
+
+- name: Wait for k3s API to listen on 6443
+  wait_for:
+    host: 127.0.0.1
+    port: 6443
+    delay: 5
+    timeout: 120
+
+- name: Wait for node to become Ready
+  command: kubectl get nodes --no-headers
+  register: k3s_nodes
+  changed_when: false
+  retries: 20
+  delay: 6
+  until: k3s_nodes.rc == 0 and ' Ready ' in k3s_nodes.stdout
+
+- name: Download and install Helm 4
+  include_tasks: helm/install.yml
+
+- name: Check if {{ cattle_namespace }} namespace exists
+  command: kubectl get namespace {{ cattle_namespace }}
+  register: cattle_ns
+  failed_when: false
+  changed_when: false
+
+- name: Create {{ cattle_namespace}} namespace
+  command: kubectl create namespace {{ cattle_namespace }}
+  when: cattle_ns.rc != 0
+
+- name: Apply cert-manager manifest
+  command: kubectl apply -f {{ cert_manager_url }}
+  register: certmgr_apply
+  changed_when: >
+    'configured' in certmgr_apply.stdout or
+    'created' in certmgr_apply.stdout
+
+- name: Wait for cert-manager CRDs to be Established
+  command: >
+    kubectl wait --for=condition=Established --timeout=240s crd
+    -l app.kubernetes.io/name=cert-manager
+  register: certmgr_crd_wait
+  changed_when: false
+
+- name: Add jetstack helm repo
+  include_tasks: helm/repos.yml
+  tags:
+    - jetstack
+
+- name: Update helm repo
+  command: helm repo update
+
+- name: Bring in helm charts and build
+  include_tasks: helm/build.yml
+  tags:
+    - cert-manager
+    - rancher-install
+
+- name: Display Rancher URL
   debug:
-    msg: "Prairie rancher role: Rancher + Helm install go here."
+    msg:
+      - "========================================="
+      - "  Rancher UI is ready!"
+      - "  URL: https://{{ vault_hostname }}/"
+      - "========================================="
