@@ -1,8 +1,0 @@
-- name: Provision k3s single node with Rancher
-  hosts: cattle
-  become: true
-  become_user: root
-  environment:
-    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-  roles:
-    - rancher
