@@ -7,6 +7,20 @@
   tags:
     - cert-manager
 
+- name: Wait for cert-manager pods to be Ready
+  command: >
+    kubectl -n cert-manager get pods --no-headers
+  register: certmgr_pods
+  changed_when: false
+  retries: 30
+  delay: 6
+  until:
+    - certmgr_pods.rc == 0
+    - certmgr_pods.stdout != ""
+    - certmgr_pods.stdout is search("Running")
+  tags:
+    - cert-manager
+
 - name: Install rancher
   command: >
     helm upgrade --install rancher rancher-latest/rancher
@@ -14,5 +28,19 @@
     --set hostname={{ vault_hostname }}
     --set replicas=1
     --set bootstrapPassword={{ bootstrap_password }}
+  tags:
+    - rancher-install
+
+- name: Wait for Rancher deployment to be Available
+  command: >
+    kubectl -n {{ cattle_namespace }} get deploy rancher -o jsonpath={.status.availableReplicas}
+  register: rancher_available
+  changed_when: false
+  retries: 40
+  delay: 6
+  until:
+    - rancher_available.rc == 0
+    - rancher_available.stdout != ""
+    - rancher_available.stdout | int >= 1
   tags:
     - rancher-install

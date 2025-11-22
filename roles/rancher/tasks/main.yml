@@ -9,7 +9,7 @@
     name:
       - nano
       - wget
-      - git
+      - kernel-modules-extra
       - tar
     state: latest
 
@@ -18,6 +18,21 @@
 
 - name: Download and install k3s
   include_tasks: k3s.yml
+
+- name: Wait for k3s API to listen on 6443
+  wait_for:
+    host: 127.0.0.1
+    port: 6443
+    delay: 5
+    timeout: 120
+
+- name: Wait for node to become Ready
+  command: kubectl get nodes --no-headers
+  register: k3s_nodes
+  changed_when: false
+  retries: 20
+  delay: 6
+  until: k3s_nodes.rc == 0 and ' Ready ' in k3s_nodes.stdout
 
 - name: Download and install Helm 4
   include_tasks: helm/install.yml
