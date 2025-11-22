@@ -8,15 +8,25 @@
 - name: Install Helm 4
   command: /opt/get_helm.sh
 
-- name: Add rancher-latest helm repo
-  command: helm repo add rancher-latest {{ rancher_latest_url }} --force-update
-  tags:
-    - rancher-latest
+- name: Ensure Rancher Helm repo is configured
+  kubernetes.core.helm_repository:
+    name: "{{ rancher_helm_repo_name }}"
+    repo_url: "{{ rancher_helm_repo_url }}"
+    state: present
+    force_update: true
+  register: rancher_repo_result
+  failed_when: false  # in case it's already there on older kubernetes.core versions
 
-- name: Add jetstack helm repo
-  command: helm repo add jetstack {{ jetstack_url }} --force-update
-  tags:
-    - jetstack
+- name: Ensure Jetstack Helm repo is configured
+  kubernetes.core.helm_repository:
+    name: "{{ cert_manager_helm_repo_name }}"
+    repo_url: "{{ cert_manager_helm_repo_url }}"
+    state: present
+    force_update: true
+  register: jetstack_repo_result
+  failed_when: false
 
-- name: Update helm repo
+- name: Update Helm repos
   command: helm repo update
+  register: helm_repo_update
+  changed_when: "'Update Complete.' in helm_repo_update.stdout"

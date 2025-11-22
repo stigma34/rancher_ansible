@@ -1,22 +1,19 @@
 ---
-- name: Wait for Rancher deployment to be Available
-  command: >
-    kubectl -n {{ cattle_namespace }} get deploy rancher -o jsonpath={.status.availableReplicas}
-  register: rancher_available
-  changed_when: false
-  retries: 40
-  delay: 6
-  until:
-    - rancher_available.rc == 0
-    - rancher_available.stdout != ""
-    - rancher_available.stdout | int >= 1
-  tags:
-    - rancher-install
+# Minimal post-deploy checks
+
+- name: Check Rancher deployment pods
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ rancher_namespace }}"
+    label_selectors:
+      - "app=rancher"
+  register: rancher_pods
+
+- name: Show Rancher pods status
+  debug:
+    var: rancher_pods.resources | map(attribute='status.phase') | list
 
 - name: Display Rancher URL
   debug:
-    msg:
-      - "========================================="
-      - "  Rancher UI is ready!"
-      - "  URL: https://{{ vault_hostname }}/"
-      - "========================================="
+    msg: "Rancher is deploying at https://{{ rancher_hostname }}"

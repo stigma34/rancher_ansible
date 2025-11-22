@@ -6,6 +6,10 @@ set -euo pipefail
 
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
+
+echo "[+] Installing Ansible collections from requirements.yml..."
+ansible-galaxy collection install -r "${PROJECT_ROOT}/collections/requirements.yml"
 
 # Walk up until we find ansible.cfg – that directory is our repo root
 ROOT_DIR="${SCRIPT_DIR}"

@@ -9,14 +9,21 @@
   command: kubectl create namespace {{ cattle_namespace }}
   when: cattle_ns.rc != 0
 
-- name: Install rancher
-  command: >
-    helm upgrade --install rancher rancher-latest/rancher
-    --namespace {{ cattle_namespace }}
-    --set hostname={{ vault_hostname }}
-    --set replicas=1
-    --set bootstrapPassword={{ bootstrap_password }}
-  tags:
-    - rancher-install
-  no_log: true
+- name: Deploy or upgrade Rancher
+  kubernetes.core.helm:
+    name: rancher
+    chart_ref: "{{ rancher_helm_repo_name }}/rancher"
+    chart_version: "{{ rancher_chart_version | default(omit) }}"
+    release_namespace: "{{ rancher_namespace }}"
+    create_namespace: true
+    wait: true
+    timeout: 1200
+    values:
+      hostname: "{{ rancher_hostname }}"
+      replicas: "{{ rancher_replicas }}"
+      bootstrapPassword: "{{ rancher_bootstrap_password }}"
+      ingress:
+        tls:
+          source: secret
+  register: rancher_helm
   

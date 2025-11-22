@@ -12,13 +12,18 @@
   register: certmgr_crd_wait
   changed_when: false
 
-- name: Install cert-manager
-  command: >
-    helm upgrade --install cert-manager jetstack/cert-manager
-    --namespace cert-manager
-    --create-namespace
-  tags:
-    - cert-manager
+- name: Deploy or upgrade cert-manager
+  kubernetes.core.helm:
+    name: cert-manager
+    chart_ref: "{{ cert_manager_helm_repo_name }}/cert-manager"
+    chart_version: "{{ cert_manager_chart_version | default(omit) }}"
+    release_namespace: "{{ cert_manager_namespace }}"
+    create_namespace: true
+    wait: true
+    timeout: 600
+    values:
+      installCRDs: true
+  register: cert_manager_helm
 
 - name: Wait for cert-manager pods to be Ready
   command: >
