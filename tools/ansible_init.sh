@@ -5,7 +5,7 @@ echo "[+] Updating system packages..."
 dnf -y update
 
 echo "[+] Installing required system packages..."
-dnf -y install python3 python3-pip python3-devel gcc openssl-devel git
+dnf -y install python3 python3-pip python3-devel gcc openssl-devel kernel-modules-extra
 
 echo "[+] Creating Ansible virtual environment..."
 python3 -m venv ~/ansible-venv

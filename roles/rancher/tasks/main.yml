@@ -4,12 +4,11 @@
     name: "*"
     state: latest
 
-- name: Install necessary packages
+- name: Install additional packages
   dnf:
     name:
       - nano
       - wget
-      - kernel-modules-extra
       - tar
     state: latest
 
