@@ -10,7 +10,6 @@
       - nano
       - wget
       - tar
-      - kernel-modules-extra
     state: latest
 
 - name: Check if br_netfilter module is present
