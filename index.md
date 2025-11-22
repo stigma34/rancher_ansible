@@ -25,7 +25,8 @@
   <img src="https://img.shields.io/badge/DigitalOcean-Supported-006aff?style=for-the-badge&logo=digitalocean&logoColor=white" />
 
   <!-- License -->
-<img src="https://img.shields.io/badge/License-Apache--2.0-555?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/License-Apache--2.0-30ba78?style=for-the-badge&logo=apache&logoColor=white" />
+
 
 
 </p>
