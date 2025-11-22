@@ -1,3 +1,42 @@
+/* ============================================================
+   GLOBAL DARK THEME FOR PAGE BACKGROUND + TEXT
+   ============================================================ */
+
+html, body {
+  background: #050607 !important;   /* deep near-black */
+  color: #d7e5d8 !important;        /* soft OD-tinted pale green */
+  margin: 0;
+  padding: 0;
+}
+
+/* Center container GitHub Pages uses */
+.markdown-body {
+  background: #0b1510 !important;   /* OD green / dark */
+  color: #d7e5d8 !important;
+  border: 1px solid #22352b !important;
+  border-radius: 1rem;
+  padding: 2rem 2.25rem;
+  box-shadow:
+    0 0 0 1px rgba(0,0,0,0.6),
+    0 12px 32px rgba(0,0,0,0.85);
+}
+
+/* Make normal paragraphs readable */
+.markdown-body p {
+  color: #d7e5d8 !important;
+}
+
+/* Make links match dark theme */
+.markdown-body a {
+  color: #2453ff !important;  /* Rancher blue */
+  border-bottom: 1px dashed rgba(36,83,255,0.5);
+}
+
+.markdown-body a:hover {
+  color: #30ba78 !important;  /* OD green highlight */
+  border-color: rgba(48,186,120,0.7);
+}
+
 /* --- Fix for GitHub code highlighter overriding our theme --- */
 
 /* Base: force everything inside code to follow our colors */
