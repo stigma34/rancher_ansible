@@ -11,25 +11,31 @@
   register: rancher_pods
   failed_when: false
 
+- name: Set Rancher pod list (safe default)
+  set_fact:
+    rancher_pod_resources: "{{ rancher_pods.resources | default([]) }}"
+  when: rancher_pods is defined
+
 - name: Show Rancher pod count
   debug:
-    msg: "Found {{ rancher_pods.resources | length }} Rancher pod(s) in namespace '{{ rancher_namespace }}'."
+    msg: "Found {{ rancher_pod_resources | length }} Rancher pod(s) in namespace '{{ rancher_namespace }}'."
+  when: rancher_pod_resources is defined
 
 - name: Show Rancher pod statuses
   debug:
     msg: >-
-      {{ rancher_pods.resources
+      {{ rancher_pod_resources
          | map(attribute='metadata.name')
-         | zip(rancher_pods.resources | map(attribute='status.phase'))
+         | zip(rancher_pod_resources | map(attribute='status.phase'))
          | map('join', ' -> ')
          | list
       }}
-  when: rancher_pods.resources | length > 0
+  when: rancher_pod_resources is defined and (rancher_pod_resources | length > 0)
 
 - name: Warn if no Rancher pods were found
   debug:
     msg: "No Rancher pods found in namespace '{{ rancher_namespace }}' (deployment may still be starting)."
-  when: rancher_pods.resources | length == 0
+  when: rancher_pod_resources is defined and (rancher_pod_resources | length == 0)
 
 - name: Display Rancher URL
   debug:
