@@ -13,6 +13,19 @@
   register: certmgr_crd_wait
   changed_when: false
 
+- name: Install or upgrade cert-manager via Helm
+  command: >
+    helm upgrade --install cert-manager {{ jetstack_helm_repo_name }}/cert-manager
+    --namespace {{ cert_manager_namespace }}
+    --create-namespace
+    --set crds.enabled=true
+  register: certmgr_helm
+  changed_when: >
+    'STATUS: deployed' in certmgr_helm.stdout or
+    'STATUS: upgraded' in certmgr_helm.stdout
+  tags:
+    - cert-manager
+
 - name: Wait for cert-manager pods to be Ready
   command: >
     kubectl -n {{ cert_manager_namespace }} get pods --no-headers
