@@ -391,3 +391,23 @@ body {
 .markdown-body pre:has(code.language-text)::before {
   content: "output // tree";
 }
+
+/* ============================================================
+   TERMINAL HEADER FIX — PREVENT TEXT FROM BEING CUT OFF
+   ============================================================ */
+
+/* Increase top padding so terminal content clears the header bar */
+.markdown-body pre {
+  padding-top: 2.6rem !important;   /* was ~2.1rem */
+}
+
+/* Slightly lower header bar for better alignment */
+.markdown-body pre::before {
+  height: 1.8rem !important;        /* keep the same height */
+  padding-top: 0.2rem !important;   /* subtle nudge */
+}
+
+/* Make sure the fake traffic-light dots don’t overlap text */
+.markdown-body pre::after {
+  top: 0.65rem !important;           /* was 0.55rem */
+}
