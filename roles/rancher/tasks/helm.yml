@@ -19,8 +19,8 @@
 
 - name: Ensure Jetstack Helm repo is configured
   kubernetes.core.helm_repository:
-    name: "{{ cert_manager_helm_repo_name }}"
-    repo_url: "{{ cert_manager_helm_repo_url }}"
+    name: "{{ jetstack_helm_repo_name }}"
+    repo_url: "{{ jetstack_helm_repo_url }}"
     state: present
     force_update: true
   register: jetstack_repo_result
