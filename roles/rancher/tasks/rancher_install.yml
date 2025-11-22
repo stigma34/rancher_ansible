@@ -19,7 +19,7 @@
     --set hostname={{ rancher_hostname }}
     --set replicas={{ rancher_replicas }}
     --set bootstrapPassword={{ rancher_bootstrap_password }}
-    --set ingress.tls.source=secret
+    --set ingress.tls.source=rancher
   register: rancher_helm
   changed_when: "'Release \"rancher\" has been upgraded' in rancher_helm.stdout
                  or 'Release \"rancher\" has been installed' in rancher_helm.stdout"
