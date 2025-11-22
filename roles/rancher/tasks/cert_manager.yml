@@ -1,5 +1,5 @@
 ---
-- name: Apply cert-manager manifest (CRDs + controllers)
+- name: Apply cert-manager manifest (CRDs)
   command: kubectl apply -f {{ cert_manager_url }}
   register: certmgr_apply
   changed_when: >
@@ -18,7 +18,6 @@
     helm upgrade --install cert-manager {{ jetstack_helm_repo_name }}/cert-manager
     --namespace {{ cert_manager_namespace }}
     --create-namespace
-    --set crds.enabled=true
   register: certmgr_helm
   changed_when: >
     'STATUS: deployed' in certmgr_helm.stdout or
