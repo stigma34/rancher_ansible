@@ -53,6 +53,20 @@
     'configured' in certmgr_apply.stdout or
     'created' in certmgr_apply.stdout
 
+- name: Apply cert-manager manifest
+  command: kubectl apply -f {{ cert_manager_url }}
+  register: certmgr_apply
+  changed_when: >
+    'configured' in certmgr_apply.stdout or
+    'created' in certmgr_apply.stdout
+
+- name: Wait for cert-manager CRDs to be Established
+  command: >
+    kubectl wait --for=condition=Established --timeout=240s crd
+    -l app.kubernetes.io/name=cert-manager
+  register: certmgr_crd_wait
+  changed_when: false
+
 - name: Add jetstack helm repo
   include_tasks: helm/repos.yml
   tags:
