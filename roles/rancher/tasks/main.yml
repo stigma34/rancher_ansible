@@ -91,3 +91,11 @@
   tags:
     - cert-manager
     - rancher-install
+
+- name: Display Rancher URL
+  debug:
+    msg:
+      - "========================================="
+      - "  Rancher UI is ready!"
+      - "  URL: https://{{ vault_hostname }}/"
+      - "========================================="

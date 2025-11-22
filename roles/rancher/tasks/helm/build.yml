@@ -30,6 +30,7 @@
     --set bootstrapPassword={{ bootstrap_password }}
   tags:
     - rancher-install
+  no_log: true
 
 - name: Wait for Rancher deployment to be Available
   command: >
