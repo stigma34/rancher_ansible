@@ -91,6 +91,71 @@ Prairie is built to:
 
 ---
 
+<div class="incoming-features-card">
+  <h2>Incoming Features <span>(SitRep)</span></h2>
+
+  <div class="features-grid">
+
+    <div class="feature-item">
+      <h3>Multi-Distro Compatibility Package</h3>
+      <p>
+        Cross-train Prairie to deploy flawlessly on Fedora, RHEL/Rocky, Debian, and Ubuntu.
+        One playbook. Any AO.
+      </p>
+    </div>
+
+    <div class="feature-item">
+      <h3>Hardened TLS Integration</h3>
+      <p>
+        Cert-manager or certbot-driven LE certs. Zero warnings. Zero nonsense.
+        Full green-lock readiness.
+      </p>
+    </div>
+
+    <div class="feature-item">
+      <h3>Cluster Force Multiplication</h3>
+      <p>
+        Promote Prairie from single-node Recon to full multi-node Operations.
+        Controller + worker nodes deployed with precision.
+      </p>
+    </div>
+
+    <div class="feature-item">
+      <h3>Prairie Command Pod</h3>
+      <p>
+        An Ansible-loaded, Kubernetes-resident control unit.
+        Fire off cluster expansions and updates straight from the inside—no external operator required.
+      </p>
+    </div>
+
+    <div class="feature-item">
+      <h3>Role-Oriented Architecture Overhaul</h3>
+      <p>
+        Clean separation of responsibilities. Base ops, K3s provisioning, Rancher deployment,
+        and TLS all compartmentalized like proper mission modules.
+      </p>
+    </div>
+
+    <div class="feature-item">
+      <h3>Automated Node Enrollment</h3>
+      <p>
+        Drop a new server into the field and let Prairie pull tokens, push configs,
+        and slot it into the cluster without human intervention.
+      </p>
+    </div>
+
+    <div class="feature-item">
+      <h3>Security Posture Enhancement</h3>
+      <p>
+        Unified firewall doctrine, SSH lockdown, sysctl hardening, and distro-specific
+        quirks neutralized on contact.
+      </p>
+    </div>
+
+  </div>
+</div>
+
+
 ## Directory Layout
 
 ```text
