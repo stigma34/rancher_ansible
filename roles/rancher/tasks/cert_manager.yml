@@ -1,5 +1,7 @@
 ---
-- name: Apply cert-manager manifest (CRDs)
+# cert-manager via upstream manifest (no Helm chart)
+
+- name: Apply cert-manager manifest (CRDs + controllers)
   command: kubectl apply -f {{ cert_manager_url }}
   register: certmgr_apply
   changed_when: >
@@ -12,21 +14,6 @@
     -l app.kubernetes.io/name=cert-manager
   register: certmgr_crd_wait
   changed_when: false
-
-- name: Deploy or upgrade cert-manager
-  kubernetes.core.helm:
-    name: cert-manager
-    chart_ref: "{{ jetstack_helm_repo_name }}/cert-manager"
-    chart_version: "{{ cert_manager_chart_version | default(omit) }}"
-    release_namespace: "{{ cert_manager_namespace }}"
-    create_namespace: true
-    wait: true
-    timeout: 600s
-    values:
-      # IMPORTANT: CRDs are handled by kubectl apply above,
-      # so Helm must NOT try to manage them.
-      installCRDs: false
-  register: cert_manager_helm
 
 - name: Wait for cert-manager pods to be Ready
   command: >
