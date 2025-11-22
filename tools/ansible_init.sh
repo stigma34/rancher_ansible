@@ -21,7 +21,7 @@ fi
 echo "[prairie-init] Using repo root: ${ROOT_DIR}"
 
 VAULT_KEY="${ROOT_DIR}/.vault.key"
-VAULT_DIR="${ROOT_DIR}/prairie/group_vars/cattle"
+VAULT_DIR="${ROOT_DIR}/group_vars/cattle"
 VAULT_FILE="${VAULT_DIR}/vault.yml"
 
 echo "[+] Updating system packages..."

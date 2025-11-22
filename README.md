@@ -33,11 +33,11 @@ At this time, there really are none, the ansible_init.sh will pull down everythi
 4.  Modify your vault values to be correct for your environment (The ansible.cfg is already configured to let you edit the vault without specifying the decryption file).
 
     ```bash
-    ansible-vault edit prarie/group_vars/cattle/vault.yml
+    cd prairie && ansible-vault edit group_vars/cattle/vault.yml
     ```
 
 5.  Go ahead and run the playbook at this point.
 
     ```bash
-    cd prairie && ansible-playbook seed_rancher.yml
+    ansible-playbook seed_rancher.yml
     ```
