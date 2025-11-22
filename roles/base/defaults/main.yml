@@ -17,3 +17,7 @@ prairie_supported_families:
   - Debian
 
 prairie_manage_firewall: true
+
+---
+prairie_swap_size: "2G"
+prairie_swappiness: "10"

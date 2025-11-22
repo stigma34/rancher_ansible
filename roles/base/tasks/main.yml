@@ -71,5 +71,15 @@
   command: modprobe br_netfilter
   when: not brnet.stat.exists
 
+- name: Ensure Kubernetes bridge sysctls are set
+  sysctl:
+    name: "{{ item }}"
+    value: "1"
+    state: present
+    reload: yes
+  loop:
+    - net.bridge.bridge-nf-call-iptables
+    - net.bridge.bridge-nf-call-ip6tables
+
 - name: Build and configure swap
   include_tasks: swap.yml

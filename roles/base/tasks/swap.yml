@@ -5,20 +5,22 @@
   register: swapfile_stat
 
 - name: Fallocate /swapfile
-  command: fallocate -l 2G /swapfile
+  command: fallocate -l {{ prairie_swap_size }} /swapfile
   when: not swapfile_stat.stat.exists
 
 - name: Set /swapfile permissions
   file:
     path: /swapfile
-    mode: '0600'
+    owner: root
+    group: root
+    mode: "0600"
 
 - name: Create /swapfile
   command: mkswap /swapfile
   when: not swapfile_stat.stat.exists
 
 - name: Check if /swapfile is already active
-  command: grep -q '^/swapfile' /proc/swaps
+  command: grep -q '^/swapfile ' /proc/swaps
   register: swap_active
   failed_when: false
   changed_when: false
@@ -33,13 +35,13 @@
     src: /swapfile
     fstype: swap
     opts: sw
-    passno: '0'
-    dump: '0'
+    passno: "0"
+    dump: "0"
     state: present
 
 - name: Set swappiness
   sysctl:
     name: vm.swappiness
-    value: "10"
+    value: "{{ prairie_swappiness }}"
     state: present
     reload: yes
