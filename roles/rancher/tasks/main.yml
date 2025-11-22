@@ -13,8 +13,23 @@
       - kernel-modules-extra
     state: latest
 
-- name: Enable br_netfilter
+- name: Check if br_netfilter module is present
+  stat:
+    path: /sys/module/br_netfilter
+  register: brnet
+
+- name: Ensure br_netfilter loads at boot
+  copy:
+    dest: /etc/modules-load.d/br_netfilter.conf
+    content: "br_netfilter\n"
+    owner: root
+    group: root
+    mode: '0644'
+  when: not brnet.stat.exists
+
+- name: Enable br_netfilter if not already loaded
   command: modprobe br_netfilter
+  when: not brnet.stat.exists
 
 - name: Build and configure swap
   include_tasks: swap.yml
