@@ -87,7 +87,7 @@ Prairie is built to:
 
 5. **Print the Rancher URL**
    - At the end of the Rancher role, Prairie prints:
-     - `Rancher is available at: https://{{ vault_hostname }}/`
+     - `Rancher is available at: "https://{{ vault_hostname }}/"`
 
 ---
 
