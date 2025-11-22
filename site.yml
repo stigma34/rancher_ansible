@@ -3,7 +3,8 @@
   hosts: cattle
   become: true
   gather_facts: true
-
+  environment:
+    KUBECONFIG: /etc/rancher/k3s/k3s.yaml
   roles:
     - base
     - k3s
