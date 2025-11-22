@@ -1,7 +1,62 @@
 ---
-# Prairie k3s role
-# k3s install and systemd service management will live here.
+# Prairie k3s role – installs and ensures k3s is running
 
-- name: Placeholder k3s task
-  debug:
-    msg: "Prairie k3s role: k3s install goes here."
+- name: Check if k3s binary is already present
+  stat:
+    path: "{{ k3s_binary_path }}"
+  register: k3s_bin
+
+- name: Download k3s install script
+  get_url:
+    url: "{{ k3s_install_script_url }}"
+    dest: /tmp/get-k3s.sh
+    mode: "0755"
+  when: not k3s_bin.stat.exists
+
+- name: Run k3s install script
+  shell: >
+    /tmp/get-k3s.sh {{ k3s_install_extra_args }}
+  args:
+    creates: "{{ k3s_binary_path }}"
+  environment:
+    K3S_KUBECONFIG_MODE: "644"
+  when: not k3s_bin.stat.exists
+
+- name: Ensure k3s service is enabled and running
+  systemd:
+    name: "{{ k3s_service_name }}"
+    state: started
+    enabled: true
+
+- name: Wait for k3s API to listen on 6443
+  wait_for:
+    host: 127.0.0.1
+    port: 6443
+    delay: 5
+    timeout: 120
+
+- name: Wait for node to become Ready
+  command: /usr/local/bin/k3s kubectl get nodes --no-headers
+  register: k3s_nodes
+  changed_when: false
+  retries: 20
+  delay: 6
+  until: k3s_nodes.rc == 0 and ' Ready ' in k3s_nodes.stdout
+
+- name: Add kubectl alias for easier use
+  lineinfile:
+    path: /root/.bashrc
+    regexp: "^alias kubectl="
+    line: "alias kubectl='/usr/local/bin/k3s kubectl'"
+    insertafter: EOF
+    state: present
+    backup: yes
+
+- name: Add KUBECONFIG to .bashrc
+  lineinfile:
+    path: /root/.bashrc
+    regexp: "^export KUBECONFIG="
+    line: "export KUBECONFIG=/etc/rancher/k3s/k3s.yaml"
+    insertafter: EOF
+    state: present
+    backup: yes

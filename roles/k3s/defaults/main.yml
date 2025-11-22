@@ -1,0 +1,10 @@
+---
+k3s_install_script_url: "https://get.k3s.io"
+
+# Extra CLI args for the install script, if you ever need them.
+# Example: "--write-kubeconfig-mode 644 --disable traefik"
+k3s_install_extra_args: ""
+
+k3s_binary_path: "/usr/local/bin/k3s"
+
+k3s_service_name: "k3s"

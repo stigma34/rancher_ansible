@@ -1,6 +1,10 @@
 ---
 # Prairie base role: OS prep, packages, firewall, etc.
-
+- name: Update the OS
+  dnf:
+    name: "*"
+    state: latest
+    
 - name: Install base packages
   package:
     name: "{{ prairie_base_packages[ansible_os_family] | default([]) }}"
